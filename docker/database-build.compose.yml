@@ -1,0 +1,8 @@
+services:
+  db:
+    volumes:
+      - ./schoolmusic-mobile-init.sql:/docker-entrypoint-initdb.d/01_init.sql:ro
+
+volumes:
+  mariadb_data:
+    name: "${COMPOSE_PROJECT_NAME}_mariadb_v2"

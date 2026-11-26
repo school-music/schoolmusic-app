@@ -1,0 +1,3653 @@
+{
+  "openapi": "3.1.1",
+  "info": {
+    "title": "SchoolMusic Backend API",
+    "description": "Inteligentny radiowęzeł szkolny - backend REST API z automatycznym harmonogramem przerw, kolejką utworów, panelem moderacji i integracją audio.",
+    "version": "v1"
+  },
+  "paths": {
+    "/api/breaks": {
+      "get": {
+        "tags": [
+          "Recess"
+        ],
+        "summary": "Pobiera harmonogram przerw na dany dzień z informacją \nczy obowiązuje ExceptionDay lub ExceptionBreak.",
+        "parameters": [
+          {
+            "name": "date",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/breaks/current-status": {
+      "get": {
+        "tags": [
+          "Recess"
+        ],
+        "summary": "Sprawdza bieżący status: czy trwa przerwa, \nczy muzyka ma grać, czy obowiązuje ExceptionDay \nlub ExceptionBreak.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/breaks/exceptions": {
+      "get": {
+        "tags": [
+          "Recess"
+        ],
+        "summary": "Pobiera listę wszystkich zaplanowanych dni \nwyjątkowych (cały dzień bez muzyki).",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {}
+        ]
+      },
+      "post": {
+        "tags": [
+          "Recess"
+        ],
+        "summary": "Dodaje dzień wyjątkowy.\nTylko dla administratora.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateExceptionDayDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateExceptionDayDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateExceptionDayDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/api/breaks/exceptions/{id}": {
+      "delete": {
+        "tags": [
+          "Recess"
+        ],
+        "summary": "Usuwa dzień wyjątkowy o podanym identyfikatorze. \nTylko dla administratora.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/api/breaks/exception-breaks": {
+      "get": {
+        "tags": [
+          "Recess"
+        ],
+        "summary": "Pobiera listę zaplanowanych wyciszeń \nkonkretnych przerw (ExceptionBreak).",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {}
+        ]
+      },
+      "post": {
+        "tags": [
+          "Recess"
+        ],
+        "summary": "Dodaje wyciszenie konkretnej przerwy.\nTylko dla administratora.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateExceptionBreakDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateExceptionBreakDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateExceptionBreakDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/api/breaks/exception-breaks/{id}": {
+      "delete": {
+        "tags": [
+          "Recess"
+        ],
+        "summary": "Usuwa wyciszenie konkretnej przerwy.\nTylko dla administratora.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/api/breaks/update-break": {
+      "put": {
+        "tags": [
+          "Recess"
+        ],
+        "summary": "Pozwala administratorowi na edycję stałych godzin \nprzerw w tabeli break (np. zmiana dzwonków w szkole).",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/UpdateBreakScheduleItemDto"
+                }
+              }
+            },
+            "text/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/UpdateBreakScheduleItemDto"
+                }
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/UpdateBreakScheduleItemDto"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/api/admin/default-songs": {
+      "get": {
+        "tags": [
+          "AdminDefaultSongs"
+        ],
+        "summary": "Pobiera listę wszystkich utworów domyślnych wraz z ich metadanymi.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {}
+        ]
+      },
+      "post": {
+        "tags": [
+          "AdminDefaultSongs"
+        ],
+        "summary": "Dodaje utwór do listy utworów domyślnych.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddDefaultSongDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddDefaultSongDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddDefaultSongDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/api/admin/default-songs/{id}": {
+      "delete": {
+        "tags": [
+          "AdminDefaultSongs"
+        ],
+        "summary": "Usuwa utwór z listy utworów domyślnych po identyfikatorze wpisu lub identyfikatorze utworu.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/api/admin/special-events": {
+      "get": {
+        "tags": [
+          "AdminSpecialEvents"
+        ],
+        "summary": "Pobiera listę wszystkich wydarzeń specjalnych z opcjonalnym filtrowaniem po statusie.",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {}
+        ]
+      },
+      "post": {
+        "tags": [
+          "AdminSpecialEvents"
+        ],
+        "summary": "Tworzy nowe zaplanowane wydarzenie specjalne.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSpecialEventDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSpecialEventDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSpecialEventDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/api/admin/special-events/{id}": {
+      "get": {
+        "tags": [
+          "AdminSpecialEvents"
+        ],
+        "summary": "Pobiera szczegóły pojedynczego wydarzenia specjalnego.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {}
+        ]
+      },
+      "put": {
+        "tags": [
+          "AdminSpecialEvents"
+        ],
+        "summary": "Aktualizuje istniejące wydarzenie specjalne.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateSpecialEventDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateSpecialEventDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateSpecialEventDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {}
+        ]
+      },
+      "delete": {
+        "tags": [
+          "AdminSpecialEvents"
+        ],
+        "summary": "Usuwa wydarzenie specjalne.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/api/admin/tracks": {
+      "get": {
+        "tags": [
+          "AdminTracks"
+        ],
+        "summary": "Pobiera listę utworów dla panelu administratora z możliwością filtrowania po statusie aktywności,\nwyszukiwania, paginacji i sortowania.",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "genre",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "isActive",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32",
+              "default": 20
+            }
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "id"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "asc"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {}
+        ]
+      },
+      "post": {
+        "tags": [
+          "AdminTracks"
+        ],
+        "summary": "Dodaje nowy utwór do bazy. Jeśli podany wykonawca nie istnieje, zostaje automatycznie utworzony.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTrackDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTrackDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTrackDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/api/admin/tracks/{id}": {
+      "get": {
+        "tags": [
+          "AdminTracks"
+        ],
+        "summary": "Pobiera szczegóły pojedynczego utworu dla panelu administratora (w tym utworu nieaktywnego).",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {}
+        ]
+      },
+      "put": {
+        "tags": [
+          "AdminTracks"
+        ],
+        "summary": "Aktualizuje metadane istniejącego utworu. W razie zmiany nazwy wykonawcy, automatycznie tworzy lub łączy artystę.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTrackDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTrackDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTrackDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {}
+        ]
+      },
+      "delete": {
+        "tags": [
+          "AdminTracks"
+        ],
+        "summary": "Usuwa utwór lub wykonuje bezpieczną dezaktywację (soft-delete).\nJeśli utwór jest powiązany z historią lub kolejką, system zawsze wykonuje soft-delete (IsActive = false).",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "hardDelete",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/api/admin/tracks/{id}/restore": {
+      "post": {
+        "tags": [
+          "AdminTracks"
+        ],
+        "summary": "Przywraca wcześniej dezaktywowany utwór (IsActive = true).",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/api/breaks/templates": {
+      "get": {
+        "tags": [
+          "BreakTemplates"
+        ],
+        "summary": "Pobiera listę wszystkich szablonów przerw posortowanych według numeru przerwy.",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BreakTemplateDto"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BreakTemplateDto"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BreakTemplateDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {}
+        ]
+      },
+      "post": {
+        "tags": [
+          "BreakTemplates"
+        ],
+        "summary": "Tworzy nowy szablon przerwy szkolnej.",
+        "requestBody": {
+          "description": "Dane nowego szablonu przerwy.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateBreakTemplateDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateBreakTemplateDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateBreakTemplateDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/api/breaks/templates/{id}": {
+      "put": {
+        "tags": [
+          "BreakTemplates"
+        ],
+        "summary": "Aktualizuje godziny lub numer istniejącego szablonu przerwy.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Identyfikator szablonu przerwy.",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Zaktualizowane dane szablonu przerwy.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateBreakTemplateDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateBreakTemplateDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateBreakTemplateDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {}
+        ]
+      },
+      "delete": {
+        "tags": [
+          "BreakTemplates"
+        ],
+        "summary": "Usuwa szablon przerwy szkolnej.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Identyfikator usuwanego szablonu przerwy.",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/api/Moderation/pending": {
+      "get": {
+        "tags": [
+          "Moderation"
+        ],
+        "summary": "Zwraca wszystkie propozycje piosenek czekających na \nzatwierdzenie przez moderacje\nDostęp tylko dla administratorów",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/api/Moderation/approve/{proposalId}": {
+      "post": {
+        "tags": [
+          "Moderation"
+        ],
+        "summary": "Zatwierdza propozycję piosenki o podanym identyfikatorze, dodaje ją do zielonej listy i kolejki oraz\npowiadamia podłączonych klientów przez SignalR",
+        "parameters": [
+          {
+            "name": "proposalId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Zwraca IActionResult: 401 Unauthorized gdy brak autoryzacji moderatora; 404 NotFound gdy nie znaleziono\n    propozycji lub powiązanej piosenki; 200 Ok zawierające informacje o zatwierdzeniu, identyfikatorze elementu\n    kolejki i identyfikatorze przerwy"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/api/Moderation/deny/{proposalId}": {
+      "post": {
+        "tags": [
+          "Moderation"
+        ],
+        "summary": "Odrzuca propozycję utworu o podanym identyfikatorze; opcjonalnie dodaje utwór do czarnej listy",
+        "parameters": [
+          {
+            "name": "proposalId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "addToBlacklist",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Zwraca IActionResult z odpowiednim kodem HTTP i obiektem zawierającym komunikat, identyfikator propozycji,\n    tytuł utworu oraz flagę wskazującą, czy utwór został dodany do czarnej listy."
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/api/Moderation/reject/{proposalId}": {
+      "post": {
+        "tags": [
+          "Moderation"
+        ],
+        "summary": "Odrzuca propozycję utworu o podanym identyfikatorze; opcjonalnie dodaje utwór do czarnej listy",
+        "parameters": [
+          {
+            "name": "proposalId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "addToBlacklist",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Zwraca IActionResult z odpowiednim kodem HTTP i obiektem zawierającym komunikat, identyfikator propozycji,\n    tytuł utworu oraz flagę wskazującą, czy utwór został dodany do czarnej listy."
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/api/Moderation/banned": {
+      "get": {
+        "tags": [
+          "Moderation"
+        ],
+        "summary": "Znajduje wszystkich zbanowanych użytkowników",
+        "responses": {
+          "200": {
+            "description": "Zwraca IActionResult z odpowiednią wiadomością oraz \n    listą zbanowanych użytkowników"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/api/Moderation/ban/{userId}": {
+      "post": {
+        "tags": [
+          "Moderation"
+        ],
+        "summary": "Banuje użytkownika o podanym identyfikatorze, tworząc wpis w tabeli BannedUsers i zapisując zmiany",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "IActionResult: 200 OK gdy ban został dodany; 409 Conflict gdy użytkownik już jest zbanowany; 401\n    Unauthorized gdy brak prawidłowego identyfikatora moderatora"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/api/Moderation/unaban/{banId}": {
+      "post": {
+        "tags": [
+          "Moderation"
+        ],
+        "summary": "Odbanowuje użytkownika powiązanego z podanym identyfikatorem zakazu",
+        "parameters": [
+          {
+            "name": "banId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "IActionResult zwracający 200 (Ok) z komunikatem po pomyślnym odbanowaniu; 400 (BadRequest) gdy użytkownik\n    nie jest zbanowany; 401 (Unauthorized) gdy brak lub nieprawidłowy identyfikator moderatora"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/api/Moderation/blacklist": {
+      "get": {
+        "tags": [
+          "Moderation"
+        ],
+        "summary": "Zwraca stronicowaną listę utworów znajdujących się na czarnej liście z opcjonalnym wyszukiwaniem po tytule lub wykonawcy.",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32",
+              "default": 20
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {}
+        ]
+      },
+      "post": {
+        "tags": [
+          "Moderation"
+        ],
+        "summary": "Dodaje utwór lub wykonawcę do czarnej listy. W przypadku dodania utworu, jest on automatycznie usuwany z zielonej listy.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddSongToBlacklistDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddSongToBlacklistDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddSongToBlacklistDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/api/Moderation/blacklist/{id}": {
+      "delete": {
+        "tags": [
+          "Moderation"
+        ],
+        "summary": "Usuwa utwór z czarnej listy po identyfikatorze wpisu lub identyfikatorze utworu.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/api/Moderation/blacklist/artists": {
+      "get": {
+        "tags": [
+          "Moderation"
+        ],
+        "summary": "Zwraca stronicowaną listę zablokowanych wykonawców (ArtistBlacklist).",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32",
+              "default": 20
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/api/Moderation/blacklist/artist/{artistId}": {
+      "post": {
+        "tags": [
+          "Moderation"
+        ],
+        "summary": "Dodaje wykonawcę o podanym ID do czarnej listy wykonawców.",
+        "parameters": [
+          {
+            "name": "artistId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {}
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Moderation"
+        ],
+        "summary": "Usuwa wykonawcę z czarnej listy po identyfikatorze wykonawcy lub identyfikatorze wpisu.",
+        "parameters": [
+          {
+            "name": "artistId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/api/Moderation/greenlist": {
+      "get": {
+        "tags": [
+          "Moderation"
+        ],
+        "summary": "Zwraca stronicowaną listę utworów zatwierdzonych (zielona lista) z opcjonalnym wyszukiwaniem po tytule lub wykonawcy.",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32",
+              "default": 20
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {}
+        ]
+      },
+      "post": {
+        "tags": [
+          "Moderation"
+        ],
+        "summary": "Bezpośrednio dodaje utwór do zielonej listy (wstępne zatwierdzenie przez moderatora/administratora).",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddSongToGreenlistDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddSongToGreenlistDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddSongToGreenlistDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/api/Moderation/greenlist/{songId}": {
+      "delete": {
+        "tags": [
+          "Moderation"
+        ],
+        "summary": "Usuwa utwór z zielonej listy po identyfikatorze utworu lub identyfikatorze wpisu.",
+        "parameters": [
+          {
+            "name": "songId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/api/player/status": {
+      "get": {
+        "tags": [
+          "Player"
+        ],
+        "summary": "Pobiera aktualny stan odtwarzacza (tytuł, wykonawca, postęp, głośność, status odtwarzania).",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/player/volume": {
+      "post": {
+        "tags": [
+          "Player"
+        ],
+        "summary": "Ustawia poziom głośności odtwarzacza (0-100%).",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetVolumeDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetVolumeDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetVolumeDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/api/player/volume/up": {
+      "post": {
+        "tags": [
+          "Player"
+        ],
+        "summary": "Zwiększa głośność odtwarzacza o określoną liczbę procent (domyślnie 5%).",
+        "parameters": [
+          {
+            "name": "step",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32",
+              "default": 5
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/api/player/volume/down": {
+      "post": {
+        "tags": [
+          "Player"
+        ],
+        "summary": "Zmniejsza głośność odtwarzacza o określoną liczbę procent (domyślnie 5%).",
+        "parameters": [
+          {
+            "name": "step",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32",
+              "default": 5
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/api/player/upload-and-play": {
+      "post": {
+        "tags": [
+          "Player"
+        ],
+        "summary": "Przesyła plik audio (MP3, WAV, OGG, FLAC) i natychmiast odtwarza go na radiowęźle.",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "allOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "file": {
+                        "$ref": "#/components/schemas/IFormFile"
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "title": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "artist": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/api/player/pause": {
+      "post": {
+        "tags": [
+          "Player"
+        ],
+        "summary": "Wstrzymuje aktualne odtwarzanie muzyki.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/api/player/resume": {
+      "post": {
+        "tags": [
+          "Player"
+        ],
+        "summary": "Wznawia wstrzymane odtwarzanie muzyki.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/api/player/play-file": {
+      "post": {
+        "tags": [
+          "Player"
+        ],
+        "summary": "Odtwarza wskazany plik lokalny lub strumień z adresu URL.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlayFileDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlayFileDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlayFileDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/api/player/stop": {
+      "post": {
+        "tags": [
+          "Player"
+        ],
+        "summary": "Całkowicie zatrzymuje odtwarzanie dźwięku i resetuje stan.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/api/player/mute": {
+      "post": {
+        "tags": [
+          "Player"
+        ],
+        "summary": "Przełącza stan wyciszenia odtwarzacza (Mute/Unmute).",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/api/player/skip": {
+      "post": {
+        "tags": [
+          "Player"
+        ],
+        "summary": "Pomija bieżący utwór w kolejce radiowęzła i przechodzi do kolejnego.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/api/Queue/break/{breakId}": {
+      "get": {
+        "tags": [
+          "Queue"
+        ],
+        "summary": "Pobiera listę utworów zgłoszonych na daną przerwę (Live ranking).\nObsługuje zarówno /api/queue/break/{breakId}, jak i /api/queue?breakId={breakId}.",
+        "parameters": [
+          {
+            "name": "breakId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "breakId",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Queue": {
+      "get": {
+        "tags": [
+          "Queue"
+        ],
+        "summary": "Pobiera listę utworów zgłoszonych na daną przerwę (Live ranking).\nObsługuje zarówno /api/queue/break/{breakId}, jak i /api/queue?breakId={breakId}.",
+        "parameters": [
+          {
+            "name": "breakId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "breakId",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Queue"
+        ],
+        "summary": "Zgłasza piosenkę przez zalogowanego ucznia na najbliższą (lub wybraną) przerwę.\nObsługuje zarówno /api/queue/propose, jak i bezpośrednie /api/queue.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProposeSongDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProposeSongDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProposeSongDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/api/Queue/break/{breakId}/plan": {
+      "get": {
+        "tags": [
+          "Queue"
+        ],
+        "summary": "Zwraca ułożony przez algorytm harmonogram utworów na daną przerwę (z uwzględnieniem czasu jej trwania)",
+        "parameters": [
+          {
+            "name": "breakId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Queue/now-playing": {
+      "get": {
+        "tags": [
+          "Queue"
+        ],
+        "summary": "Zwraca utwór aktualnie odtwarzany na radiowęźle (dla ekranu TV i paska odtwarzania w aplikacji)",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Queue/propose": {
+      "post": {
+        "tags": [
+          "Queue"
+        ],
+        "summary": "Zgłasza piosenkę przez zalogowanego ucznia na najbliższą (lub wybraną) przerwę.\nObsługuje zarówno /api/queue/propose, jak i bezpośrednie /api/queue.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProposeSongDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProposeSongDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProposeSongDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/api/Queue/vote": {
+      "post": {
+        "tags": [
+          "Queue"
+        ],
+        "summary": "Oddaje głos na utwór w kolejce (lub dodaje utwór z greenlisty i oddaje na niego głos)",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VoteRequestDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VoteRequestDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/VoteRequestDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/api/Queue/vote/{queueItemId}": {
+      "delete": {
+        "tags": [
+          "Queue"
+        ],
+        "summary": "Cofa oddany wcześniej głos na utwór w kolejce",
+        "parameters": [
+          {
+            "name": "queueItemId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/api/Queue/break/{breakId}/archive": {
+      "post": {
+        "tags": [
+          "Queue"
+        ],
+        "summary": "Zamyka przerwę, przenosi utwory, które zagrały, do tabeli historii i czyści kolejkę\nDostęp tylko dla moderatorów i administratorów",
+        "parameters": [
+          {
+            "name": "breakId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/api/Queue/break/{breakId}/order": {
+      "put": {
+        "tags": [
+          "Queue"
+        ],
+        "summary": "Zmienia kolejność utworów w kolejce danej przerwy",
+        "parameters": [
+          {
+            "name": "breakId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReorderQueueDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReorderQueueDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReorderQueueDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/api/Rankings/songs": {
+      "get": {
+        "tags": [
+          "Rankings"
+        ],
+        "summary": "Zwraca ranking najpopularniejszych utworów w szkole.\nParametr period: \"day\", \"week\" (domyślnie), \"month\", \"year\", \"all-time\".",
+        "parameters": [
+          {
+            "name": "period",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "week"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Rankings/artists": {
+      "get": {
+        "tags": [
+          "Rankings"
+        ],
+        "summary": "Zwraca ranking najczęściej odtwarzanych wykonawców w szkole.\nParametr period: \"day\", \"week\" (domyślnie), \"month\", \"year\", \"all-time\".",
+        "parameters": [
+          {
+            "name": "period",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "week"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Rankings/history": {
+      "get": {
+        "tags": [
+          "Rankings"
+        ],
+        "summary": "Zwraca historię ostatnio zagranych utworów na radiowęźle (oś czasu).",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32",
+              "default": 20
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/spotify-playback/connect": {
+      "get": {
+        "tags": [
+          "SpotifyPlayback"
+        ],
+        "summary": "Generuje adres autoryzacyjny Spotify OAuth 2.0 i przekierowuje do logowania konta radiowęzła.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/api/spotify-playback/callback": {
+      "get": {
+        "tags": [
+          "SpotifyPlayback"
+        ],
+        "summary": "Punkt końcowy wywołania zwrotnego (OAuth Callback) po autoryzacji w serwisie Spotify.",
+        "parameters": [
+          {
+            "name": "code",
+            "in": "query",
+            "description": "Kod autoryzacyjny zwrócony przez Spotify.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "state",
+            "in": "query",
+            "description": "Stan weryfikacji zapobiegający atakom CSRF.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "error",
+            "in": "query",
+            "description": "Ewentualny kod błędu autoryzacji Spotify.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/spotify-playback/status": {
+      "get": {
+        "tags": [
+          "SpotifyPlayback"
+        ],
+        "summary": "Pobiera status połączenia ze Spotify Connect (stan autoryzacji, aktywne urządzenie audio).",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/api/statistics/dashboard": {
+      "get": {
+        "tags": [
+          "Statistics"
+        ],
+        "summary": "Zwraca komplet statystyk dla dashboardu: liczbę oddanych głosów (ogółem, w bieżącym tygodniu, dzisiaj),\nrozkład najpopularniejszych gatunków, aktywność z ostatnich 7 dni oraz TOP 10 najczęściej odtwarzanych\nutworów i wykonawców.",
+        "description": "Wynik jest cache'owany w Redis na 60 sekund, więc dane mogą być nieaktualne maksymalnie o ten czas.\nLiczniki głosów obejmują wyłącznie aktualnie otwarte przerwy — po archiwizacji przerwy jej głosy\nsą usuwane z bazy i pozostają jedynie w historii odtworzeń.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/api/system/status": {
+      "get": {
+        "tags": [
+          "SystemStatus"
+        ],
+        "summary": "Status szkoły, licznik do końca/początku przerwy, aktualny utwór i TOP 5 kolejki.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Tracks/search": {
+      "get": {
+        "tags": [
+          "Tracks"
+        ],
+        "summary": "Wyszukuje utwory w zewnętrznym katalogu (np. Spotify API).\nParametr wyszukiwania może być przekazany w nagłówku HTTP 'q', w query stringu '?q=...' lub '?query=...'.",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "q",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Tracks": {
+      "get": {
+        "tags": [
+          "Tracks"
+        ],
+        "summary": "Zwraca listę utworów z bazy z możliwością wyszukiwania, filtrowania po gatunku, sortowania i paginacji.\nZawiera informację o liczbie głosów na bieżącą/wskazaną przerwę oraz flagę polubienia dla zalogowanego użytkownika.",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "genre",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "breakId",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32",
+              "default": 20
+            }
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "id"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "asc"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Tracks/genres": {
+      "get": {
+        "tags": [
+          "Tracks"
+        ],
+        "summary": "Zwraca listę unikalnych gatunków muzycznych obecnych w bazie aktywnych utworów",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Tracks/{id}": {
+      "get": {
+        "tags": [
+          "Tracks"
+        ],
+        "summary": "Zwraca szczegóły pojedynczego utworu wraz z informacją o głosach na bieżącą/wskazaną przerwę",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "breakId",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Tracks/favourites": {
+      "get": {
+        "tags": [
+          "Tracks"
+        ],
+        "summary": "Zwraca listę ulubionych utworów zalogowanego użytkownika",
+        "responses": {
+          "200": {
+            "description": "Task&lt;IActionResult&gt; — 200 OK zawierające obiekt z polem Message i kolekcją Tracks (Id, SpotifyId, Title, Cover,\n    DurationMs); 401 Unauthorized gdy token JWT jest nieprawidłowy"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/api/Tracks/{id}/favourites": {
+      "post": {
+        "tags": [
+          "Tracks"
+        ],
+        "summary": "Dodawanie po id w bazie danych",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/api/Tracks/spotify/{spotifyId}/favourites": {
+      "post": {
+        "tags": [
+          "Tracks"
+        ],
+        "summary": "Dodaje utwór o podanym identyfikatorze Spotify do listy ulubionych bieżącego użytkownika",
+        "parameters": [
+          {
+            "name": "spotifyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200 OK po pomyślnym dodaniu; 401 Unauthorized przy brakującym lub niepoprawnym tokenie; 404 NotFound gdy nie\n    znaleziono użytkownika lub utworu; 409 Conflict gdy utwór już znajduje się w ulubionych"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/api/Tracks/favourites/{id}": {
+      "delete": {
+        "tags": [
+          "Tracks"
+        ],
+        "summary": "Usuwa piosenkę z listy ulubionych zalogowanego użytkownika",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Zwraca IActionResult: 200 (OK) po pomyślnym usunięciu; 401 (Unauthorized) jeśli brak lub niepoprawny token; 404\n    (NotFound) jeśli użytkownik, piosenka lub powiązanie piosenki z ulubionymi nie istnieje"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/api/users": {
+      "get": {
+        "tags": [
+          "UserManagement"
+        ],
+        "summary": "Zwraca stronicowaną listę użytkowników systemu (bez haseł)",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32",
+              "default": 20
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/api/users/{id}/role": {
+      "put": {
+        "tags": [
+          "UserManagement"
+        ],
+        "summary": "Zmienia rolę (rangę) wskazanego użytkownika\nDostępne wyłącznie dla rangi head_admin",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserRoleDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserRoleDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserRoleDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Loguje użytkownika do systemu i zwraca token JWT z przypisaną rolą.\nWspiera logowanie lokalne oraz automatyczny fallback do szkolnego katalogu LDAP.",
+        "requestBody": {
+          "description": "Dane logowania (login i hasło).",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserLoginDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserLoginDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserLoginDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Token JWT i status operacji."
+          }
+        }
+      }
+    },
+    "/api/auth/school/login": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Dedykowany endpoint logowania przez szkolne konto LDAP / Active Directory.\nJeśli konto nie istnieje w systemie, następuje automatyczna rejestracja (JIT provisioning).",
+        "requestBody": {
+          "description": "Login i hasło konta szkolnego.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SchoolLoginDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SchoolLoginDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/SchoolLoginDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Token JWT i metadane konta."
+          }
+        }
+      }
+    },
+    "/api/auth/ldap/login": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Dedykowany endpoint logowania przez szkolne konto LDAP / Active Directory.\nJeśli konto nie istnieje w systemie, następuje automatyczna rejestracja (JIT provisioning).",
+        "requestBody": {
+          "description": "Login i hasło konta szkolnego.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SchoolLoginDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SchoolLoginDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/SchoolLoginDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Token JWT i metadane konta."
+          }
+        }
+      }
+    },
+    "/api/auth/register": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Rejestruje nowe konto ucznia w systemie.",
+        "requestBody": {
+          "description": "Dane nowego konta (login i hasło).",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserRegisterDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserRegisterDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserRegisterDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Utworzone konto."
+          }
+        }
+      }
+    },
+    "/api/auth/delete-acc": {
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Usuwa konto aktualnie zalogowanego użytkownika.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/api/schedule/weekly": {
+      "get": {
+        "tags": [
+          "WeeklySchedule"
+        ],
+        "summary": "Zwraca konfigurację muzyki dla wszystkich 7 dni tygodnia",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/schedule/weekly/{weekday}": {
+      "put": {
+        "tags": [
+          "WeeklySchedule"
+        ],
+        "summary": "Zmienia flagę włączenia muzyki dla całego danego dnia tygodnia",
+        "parameters": [
+          {
+            "name": "weekday",
+            "in": "path",
+            "description": "Dzień tygodnia (1 = Poniedziałek, 7 = Niedziela)",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Nowy stan włączenia muzyki",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateWeeklyDayDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateWeeklyDayDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateWeeklyDayDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/api/schedule/weekly/{weekday}/breaks": {
+      "get": {
+        "tags": [
+          "WeeklySchedule"
+        ],
+        "summary": "Pobiera listę przerw z szablonu dla danego dnia tygodnia wraz ze statusem włączenia muzyki",
+        "parameters": [
+          {
+            "name": "weekday",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/schedule/weekly/{weekday}/breaks/{breakNo}": {
+      "put": {
+        "tags": [
+          "WeeklySchedule"
+        ],
+        "summary": "Zmienia flagę włączenia muzyki dla konkretnej przerwy w danym dniu tygodnia",
+        "parameters": [
+          {
+            "name": "weekday",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "breakNo",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateWeeklyBreakDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateWeeklyBreakDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateWeeklyBreakDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/api/schedule/calendar": {
+      "get": {
+        "tags": [
+          "WeeklySchedule"
+        ],
+        "summary": "Zwraca zagregowany widok kalendarza dla zadanego przedziału dat (maks. 31 dni).\nUwzględnia standardowe szablony dzwonków, reguły tygodniowe, dni wolne, wyjątki oraz wydarzenia dźwiękowe.",
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AddDefaultSongDto": {
+        "required": [
+          "songId"
+        ],
+        "type": "object",
+        "properties": {
+          "songId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "AddSongToBlacklistDto": {
+        "required": [
+          "songId",
+          "artistId"
+        ],
+        "type": "object",
+        "properties": {
+          "songId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "artistId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "AddSongToGreenlistDto": {
+        "required": [
+          "songId"
+        ],
+        "type": "object",
+        "properties": {
+          "songId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "BreakTemplateDto": {
+        "required": [
+          "id",
+          "breakNumber",
+          "startsTime",
+          "endsTime"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "breakNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "startsTime": {
+            "type": "string",
+            "format": "time"
+          },
+          "endsTime": {
+            "type": "string",
+            "format": "time"
+          }
+        },
+        "description": "Model DTO reprezentujący szablon przerwy szkolnej."
+      },
+      "CreateBreakTemplateDto": {
+        "required": [
+          "breakNumber",
+          "startsTime",
+          "endsTime"
+        ],
+        "type": "object",
+        "properties": {
+          "breakNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "startsTime": {
+            "type": "string",
+            "format": "time"
+          },
+          "endsTime": {
+            "type": "string",
+            "format": "time"
+          }
+        },
+        "description": "Model żądania utworzenia nowego szablonu przerwy szkolnej."
+      },
+      "CreateExceptionBreakDto": {
+        "required": [
+          "breakDate",
+          "breakNumber"
+        ],
+        "type": "object",
+        "properties": {
+          "breakDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "breakNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ]
+          },
+          "musicEnabled": {
+            "type": "boolean",
+            "default": false
+          },
+          "description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        },
+        "description": "Dane potrzebne do utworzenia przerwy wyjątkowej"
+      },
+      "CreateExceptionDayDto": {
+        "required": [
+          "startDate",
+          "endDate",
+          "dayType",
+          "description"
+        ],
+        "type": "object",
+        "properties": {
+          "startDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "endDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date"
+          },
+          "dayType": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        },
+        "description": "Dane potrzebne do utworzenia dnia wyjątkowego"
+      },
+      "CreateSpecialEventDto": {
+        "required": [
+          "title",
+          "fileUrl",
+          "startsAt"
+        ],
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "fileUrl": {
+            "type": "string"
+          },
+          "startsAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "eventStatus": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "default": "pending"
+          }
+        }
+      },
+      "CreateTrackDto": {
+        "required": [
+          "title",
+          "artistName",
+          "genre",
+          "durationMs",
+          "songUrl",
+          "cover"
+        ],
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "artistName": {
+            "type": "string"
+          },
+          "genre": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "durationMs": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "songUrl": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "cover": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "source": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "default": "other"
+          },
+          "spotifyId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        },
+        "description": "Model żądania dodania nowego utworu przez administratora"
+      },
+      "IFormFile": {
+        "type": "string",
+        "format": "binary"
+      },
+      "PlayFileDto": {
+        "required": [
+          "pathOrUrl",
+          "title",
+          "artist"
+        ],
+        "type": "object",
+        "properties": {
+          "pathOrUrl": {
+            "type": "string"
+          },
+          "title": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "artist": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "ProposeSongDto": {
+        "type": "object",
+        "properties": {
+          "songId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "spotifyId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "breakId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "title": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "artist": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "genre": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "mp3Url": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        },
+        "description": "Reprezentuje żądanie zaproponowania utworu zawierające identyfikatory utworu i przerwy"
+      },
+      "ReorderQueueDto": {
+        "required": [
+          "queueItemIds"
+        ],
+        "type": "object",
+        "properties": {
+          "queueItemIds": {
+            "type": "array",
+            "items": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        }
+      },
+      "SchoolLoginDto": {
+        "type": "object",
+        "properties": {
+          "login": {
+            "type": "string",
+            "description": "Login szkolny (np. imie.nazwisko lub email szkolny)."
+          },
+          "password": {
+            "type": "string",
+            "description": "Hasło do szkolnego konta."
+          }
+        },
+        "description": "Model danych logowania dedykowanego dla kont szkolnych LDAP."
+      },
+      "SetVolumeDto": {
+        "required": [
+          "volume"
+        ],
+        "type": "object",
+        "properties": {
+          "volume": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "UpdateBreakScheduleItemDto": {
+        "required": [
+          "id",
+          "startAt",
+          "endsAt"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "startAt": {
+            "type": "string",
+            "format": "time"
+          },
+          "endsAt": {
+            "type": "string",
+            "format": "time"
+          },
+          "voteEnds": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "time"
+          }
+        },
+        "description": "Dane transferu do aktualizacji wpisu harmonogramu przerwy"
+      },
+      "UpdateBreakTemplateDto": {
+        "required": [
+          "breakNumber",
+          "startsTime",
+          "endsTime"
+        ],
+        "type": "object",
+        "properties": {
+          "breakNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "startsTime": {
+            "type": "string",
+            "format": "time"
+          },
+          "endsTime": {
+            "type": "string",
+            "format": "time"
+          }
+        },
+        "description": "Model żądania aktualizacji istniejącego szablonu przerwy szkolnej."
+      },
+      "UpdateSpecialEventDto": {
+        "required": [
+          "title",
+          "fileUrl",
+          "startsAt",
+          "eventStatus"
+        ],
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "fileUrl": {
+            "type": "string"
+          },
+          "startsAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "eventStatus": {
+            "type": "string"
+          }
+        }
+      },
+      "UpdateTrackDto": {
+        "required": [
+          "title",
+          "artistName",
+          "genre",
+          "durationMs",
+          "songUrl",
+          "cover",
+          "source",
+          "spotifyId",
+          "isActive"
+        ],
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "artistName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "genre": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "durationMs": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "songUrl": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "cover": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "source": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "spotifyId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "isActive": {
+            "type": [
+              "null",
+              "boolean"
+            ]
+          }
+        },
+        "description": "Model żądania aktualizacji istniejącego utworu przez administratora"
+      },
+      "UpdateUserRoleDto": {
+        "required": [
+          "rankId"
+        ],
+        "type": "object",
+        "properties": {
+          "rankId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "UpdateWeeklyBreakDto": {
+        "required": [
+          "musicEnabled"
+        ],
+        "type": "object",
+        "properties": {
+          "musicEnabled": {
+            "type": "boolean"
+          }
+        }
+      },
+      "UpdateWeeklyDayDto": {
+        "required": [
+          "musicEnabled"
+        ],
+        "type": "object",
+        "properties": {
+          "musicEnabled": {
+            "type": "boolean"
+          }
+        }
+      },
+      "UserLoginDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Nazwa użytkownika (login lokalny lub szkolny imie.nazwisko)."
+          },
+          "password": {
+            "type": "string",
+            "description": "Hasło użytkownika."
+          }
+        },
+        "description": "Model danych logowania użytkownika."
+      },
+      "UserRegisterDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Nazwa użytkownika (min. 3 znaki)."
+          },
+          "password": {
+            "type": "string",
+            "description": "Hasło użytkownika (min. 8 znaków)."
+          }
+        },
+        "description": "Model danych rejestracji nowego użytkownika."
+      },
+      "VoteRequestDto": {
+        "required": [
+          "queueItemId"
+        ],
+        "type": "object",
+        "properties": {
+          "queueItemId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "songId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "breakId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        },
+        "description": "Reprezentuje żądanie oddania głosu dla elementu kolejki, opcjonalnie powiązane z utworem lub przerwą"
+      }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "http",
+        "description": "Podaj token JWT w formacie: Bearer {twoj_token}",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Recess"
+    },
+    {
+      "name": "AdminDefaultSongs"
+    },
+    {
+      "name": "AdminSpecialEvents"
+    },
+    {
+      "name": "AdminTracks"
+    },
+    {
+      "name": "BreakTemplates"
+    },
+    {
+      "name": "Moderation"
+    },
+    {
+      "name": "Player"
+    },
+    {
+      "name": "Queue"
+    },
+    {
+      "name": "Rankings"
+    },
+    {
+      "name": "SpotifyPlayback"
+    },
+    {
+      "name": "Statistics"
+    },
+    {
+      "name": "SystemStatus"
+    },
+    {
+      "name": "Tracks"
+    },
+    {
+      "name": "UserManagement"
+    },
+    {
+      "name": "Users"
+    },
+    {
+      "name": "WeeklySchedule"
+    }
+  ]
+}

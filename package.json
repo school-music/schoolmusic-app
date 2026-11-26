@@ -1,0 +1,57 @@
+{
+  "name": "schoolmusic-mobile",
+  "version": "1.0.0",
+  "private": true,
+  "main": "expo-router/entry",
+  "scripts": {
+    "start": "expo start",
+    "ios": "expo run:ios",
+    "android": "expo run:android",
+    "backend": "node scripts/backend.mjs",
+    "api:pull": "node scripts/openapi.mjs --pull",
+    "api:generate": "node scripts/openapi.mjs && openapi-ts",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src scripts --max-warnings 0",
+    "test": "node --import tsx --test tests/*.test.ts"
+  },
+  "engines": {
+    "node": ">=22.18.0"
+  },
+  "dependencies": {
+    "@expo/vector-icons": "^15.0.2",
+    "@microsoft/signalr": "^10.0.0",
+    "@react-native-async-storage/async-storage": "2.2.0",
+    "@tanstack/react-query": "^5.108.4",
+    "expo": "58.0.26",
+    "expo-build-properties": "~58.0.12",
+    "expo-constants": "~58.0.16",
+    "expo-document-picker": "~58.0.5",
+    "expo-file-system": "~58.0.14",
+    "expo-image": "~58.0.18",
+    "expo-linear-gradient": "~58.0.4",
+    "expo-linking": "~58.0.17",
+    "expo-network": "~58.0.5",
+    "expo-router": "~58.0.32",
+    "expo-secure-store": "~58.0.3",
+    "expo-status-bar": "~58.0.5",
+    "expo-web-browser": "~58.1.0",
+    "react": "19.3.0",
+    "react-dom": "^19.3.0",
+    "react-native": "0.88.1",
+    "react-native-gesture-handler": "~3.3.0",
+    "react-native-reanimated": "4.7.1",
+    "react-native-safe-area-context": "~5.11.1",
+    "react-native-screens": "~4.30.1",
+    "react-native-worklets": "0.13.0",
+    "zod": "^4.0.0"
+  },
+  "devDependencies": {
+    "@hey-api/openapi-ts": "0.99.0",
+    "@types/node": "^26.6.10",
+    "@types/react": "~19.3.0",
+    "eslint": "^9.39.0",
+    "eslint-config-expo": "~58.0.4",
+    "tsx": "^4.20.0",
+    "typescript": "~6.0.3"
+  }
+}
